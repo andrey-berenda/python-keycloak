@@ -31,9 +31,11 @@ of openid tokens when required.
 from __future__ import annotations
 
 from datetime import datetime, timedelta, timezone
-from typing import TYPE_CHECKING, Any, Callable
+from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
+    from collections.abc import Callable
+
     from httpx import Response as AsyncResponse
     from requests import Response
 

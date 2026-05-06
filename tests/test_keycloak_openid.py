@@ -73,7 +73,7 @@ def test_add_secret_key_with_instance_assertion(env: KeycloakTestEnv) -> None:
         server_url=f"http://{env.keycloak_host}:{env.keycloak_port}",
         realm_name="master",
         client_id=None,
-        client_secret_key="should-be-ignored",
+        client_secret_key="should-be-ignored",  # noqa: S106
         client_assertion="signed.jwt.value",
     )
     payload = oid._add_secret_key({"grant_type": "client_credentials"})
@@ -113,7 +113,7 @@ def test_add_secret_key_assertion_in_payload_suppresses_secret(env: KeycloakTest
         server_url=f"http://{env.keycloak_host}:{env.keycloak_port}",
         realm_name="master",
         client_id="some-client",
-        client_secret_key="should-be-ignored",
+        client_secret_key="should-be-ignored",  # noqa: S106
     )
     payload = oid._add_secret_key({"client_assertion": "per.call.jwt"})
     assert payload == {
@@ -129,7 +129,7 @@ def test_add_secret_key_secret_path_unchanged(env: KeycloakTestEnv) -> None:
         server_url=f"http://{env.keycloak_host}:{env.keycloak_port}",
         realm_name="master",
         client_id="some-client",
-        client_secret_key="the-secret",
+        client_secret_key="the-secret",  # noqa: S106
     )
     payload = oid._add_secret_key({"grant_type": "client_credentials"})
     assert payload == {
@@ -148,9 +148,7 @@ def test_token_sends_private_key_jwt_payload(env: KeycloakTestEnv) -> None:
 
     fake_response = mock.Mock(status_code=200)
     fake_response.json.return_value = {"access_token": "x", "token_type": "Bearer"}
-    with mock.patch.object(
-        oid.connection, "raw_post", return_value=fake_response
-    ) as raw_post:
+    with mock.patch.object(oid.connection, "raw_post", return_value=fake_response) as raw_post:
         oid.token(grant_type="client_credentials", client_assertion="signed.jwt.value")
 
     sent_payload = raw_post.call_args.kwargs["data"]
