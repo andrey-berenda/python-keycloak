@@ -1289,6 +1289,7 @@ class KeycloakOpenID:
         totp: int | None = None,
         scope: str = "openid",
         code_verifier: str | None = None,
+        client_assertion: str | None = None,
         **extra: Any,  # noqa: ANN401
     ) -> dict:
         """
@@ -1317,6 +1318,10 @@ class KeycloakOpenID:
         :type scope: str
         :param code_verifier: PKCE code verifier
         :type code_verifier: str
+        :param client_assertion: per-call ``private_key_jwt`` assertion. Overrides the
+            instance-level ``client_assertion`` for this request and suppresses
+            ``client_secret``.
+        :type client_assertion: str | None
         :param extra: Additional extra arguments
         :type extra: dict
         :returns: Keycloak token
@@ -1334,6 +1339,8 @@ class KeycloakOpenID:
         }
         if code_verifier:
             payload["code_verifier"] = code_verifier
+        if client_assertion is not None:
+            payload["client_assertion"] = client_assertion
         if extra:
             payload.update(extra)
 
